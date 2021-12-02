@@ -1,4 +1,4 @@
-.globl simple_fn naive_pow inc_arr helper_fn
+.globl simple_fn naive_pow inc_arr
 
 .data
 failure_message: .asciiz "Test failed for some reason.\n"
@@ -106,7 +106,6 @@ inc_arr:
     mv s0, a0 # Copy start of array to saved register
     mv s1, a1 # Copy length of array to saved register
     li t0, 0 # Initialize counter to 0
-
 inc_arr_loop:
     beq t0, s1, inc_arr_end
     slli t1, t0, 2 # Convert array index to byte offset
@@ -117,23 +116,18 @@ inc_arr_loop:
     # Hint: What does the "t" in "t0" stand for?
     # Also ask yourself this: why don't we need to preserve t1?
     #
-    addi sp, sp, -4
-    sw t0, 0(sp)
 
     jal helper_fn
     # Finished call for helper_fn
-    lw t0, 0(sp)
-    addi sp, sp, 4
     addi t0, t0, 1 # Increment counter
     j inc_arr_loop
-
 inc_arr_end:
     # BEGIN EPILOGUE
-    # END EPILOGUE
     lw ra, 0(sp)
     lw s0, 4(sp)
     lw s1, 8(sp)
     addi sp, sp, 12
+    # END EPILOGUE
     ret
 
 # This helper function adds 1 to the value at the memory address in a0.
@@ -146,15 +140,11 @@ inc_arr_end:
 # as appropriate.
 helper_fn:
     # BEGIN PROLOGUE
-    addi sp, sp, -4
-    sw s0, 0(sp)
     # END PROLOGUE
     lw t1, 0(a0)
     addi s0, t1, 1
     sw s0, 0(a0)
     # BEGIN EPILOGUE
-    lw s0, 0(sp)
-    addi sp sp 4
     # END EPILOGUE
     ret
 
